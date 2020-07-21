@@ -18,71 +18,71 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class RecipesBootstrap implements ApplicationListener<ContextRefreshedEvent> {
-
+    
     private final RecipeRepository recipeRepository;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
     private final CategoryRepository categoryRepository;
-
+    
     public RecipesBootstrap(RecipeRepository recipeRepository, UnitOfMeasureRepository unitOfMeasureRepository,
                             CategoryRepository categoryRepository) {
         this.recipeRepository = recipeRepository;
         this.unitOfMeasureRepository = unitOfMeasureRepository;
         this.categoryRepository = categoryRepository;
     }
-
-
+    
+    
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
         recipeRepository.saveAll(getRecipes());
         log.debug("Loading bootstrap data");
     }
-
+    
     private List<Recipe> getRecipes() {
-
+        
         List<Recipe> recipesArrayList = new ArrayList<>();
-
+        
         // get UOMs
         Optional<UnitOfMeasure> teaspoonOptional = unitOfMeasureRepository.findByDescription("Teaspoon");
         if (teaspoonOptional.isEmpty()) {
             throw new RuntimeException("Expected UOM Not Found");
         }
-
+        
         Optional<UnitOfMeasure> tablespoonOptional = unitOfMeasureRepository.findByDescription("Tablespoon");
         if (tablespoonOptional.isEmpty()) {
             throw new RuntimeException("Expected UOM Not Found");
         }
-
+        
         Optional<UnitOfMeasure> cupOptional = unitOfMeasureRepository.findByDescription("Cup");
         if (cupOptional.isEmpty()) {
             throw new RuntimeException("Expected UOM Not Found");
         }
-
+        
         Optional<UnitOfMeasure> pinchOptional = unitOfMeasureRepository.findByDescription("Pinch");
         if (pinchOptional.isEmpty()) {
             throw new RuntimeException("Expected UOM Not Found");
         }
-
+        
         Optional<UnitOfMeasure> ounceOptional = unitOfMeasureRepository.findByDescription("Ounce");
         if (ounceOptional.isEmpty()) {
             throw new RuntimeException("Expected UOM Not Found");
         }
-
+        
         Optional<UnitOfMeasure> eachOptional = unitOfMeasureRepository.findByDescription("Each");
         if (eachOptional.isEmpty()) {
             throw new RuntimeException("Expected UOM Not Found");
         }
-
+        
         Optional<UnitOfMeasure> dashOptional = unitOfMeasureRepository.findByDescription("Dash");
         if (dashOptional.isEmpty()) {
             throw new RuntimeException("Expected UOM Not Found");
         }
-
+        
         Optional<UnitOfMeasure> pintOptional = unitOfMeasureRepository.findByDescription("Pint");
         if (pintOptional.isEmpty()) {
             throw new RuntimeException("Expected UOM Not Found");
         }
-
+        
         // get optionals
         UnitOfMeasure teaspoon = teaspoonOptional.get();
         UnitOfMeasure tablespoon = tablespoonOptional.get();
@@ -92,22 +92,28 @@ public class RecipesBootstrap implements ApplicationListener<ContextRefreshedEve
         UnitOfMeasure each = eachOptional.get();
         UnitOfMeasure dash = dashOptional.get();
         UnitOfMeasure pint = pintOptional.get();
-
+        
         // get categories
         Optional<Category> americanCategoryOptional = categoryRepository.findByDescription("American");
         if (americanCategoryOptional.isEmpty()) {
             throw new RuntimeException("Expected Category Not Found");
         }
-
+        
         Optional<Category> mexicanCategoryOptional = categoryRepository.findByDescription("Mexican");
         if (mexicanCategoryOptional.isEmpty()) {
             throw new RuntimeException("Expected Category Not Found");
         }
-
+        
+        Optional<Category> italianCategoryOptional = categoryRepository.findByDescription("Italian");
+        if (italianCategoryOptional.isEmpty()) {
+            throw new RuntimeException("Expected Category Not Found");
+        }
+        
         // get optionals
         Category americanCategory = americanCategoryOptional.get();
         Category mexicanCategory = mexicanCategoryOptional.get();
-
+        Category italianCategory = italianCategoryOptional.get();
+        
         // create Perfect Guacamole
         Recipe guacamoleRecipe = new Recipe();
         guacamoleRecipe.setDescription("Perfect Guacamole");
@@ -126,7 +132,7 @@ public class RecipesBootstrap implements ApplicationListener<ContextRefreshedEve
                 "\n" +
                 "\n" +
                 "Read more: http://www.simplyrecipes.com/recipes/perfect_guacamole/#ixzz4jvpiV9Sd");
-
+        
         // note for Perfect Guacamole
         Notes guacamoleNote = new Notes();
         guacamoleNote.setRecipeNotes("For a very quick guacamole just take a 1/4 cup of salsa and mix it in with your mashed avocados.\n" +
@@ -136,9 +142,12 @@ public class RecipesBootstrap implements ApplicationListener<ContextRefreshedEve
                 "\n" +
                 "\n" +
                 "Read more: http://www.simplyrecipes.com/recipes/perfect_guacamole/#ixzz4jvoun5ws");
-
+        
         guacamoleRecipe.setNotes(guacamoleNote);
-
+        guacamoleRecipe.setUrl("http://www.simplyrecipes.com/recipes/perfect_guacamole/");
+        guacamoleRecipe.setServings(4);
+        guacamoleRecipe.setSource("Simply Recipes");
+        
         // ingredients for Perfect Guacamole
         guacamoleRecipe.addIngredient(new Ingredient("ripe avocados", new BigDecimal(2), each, guacamoleRecipe));
         guacamoleRecipe.addIngredient(new Ingredient("Kosher salt", new BigDecimal(".5"), teaspoon, guacamoleRecipe));
@@ -148,34 +157,41 @@ public class RecipesBootstrap implements ApplicationListener<ContextRefreshedEve
         guacamoleRecipe.addIngredient(new Ingredient("Cilantro", new BigDecimal(2), tablespoon, guacamoleRecipe));
         guacamoleRecipe.addIngredient(new Ingredient("freshly grated black pepper", new BigDecimal(2), dash, guacamoleRecipe));
         guacamoleRecipe.addIngredient(new Ingredient("ripe tomato, seeds and pulp removed, chopped", new BigDecimal(".5"), each, guacamoleRecipe));
-
+        
         // link category and Perfect Guacamole
         guacamoleRecipe.getCategories().add(americanCategory);
         guacamoleRecipe.getCategories().add(mexicanCategory);
-
+        
         // save to list
         recipesArrayList.add(guacamoleRecipe);
-
+        
         // Yummy Tacos
         Recipe tacosRecipe = new Recipe();
         tacosRecipe.setDescription("Spicy Grilled Chicken Taco");
         tacosRecipe.setCookTime(9);
         tacosRecipe.setPrepTime(20);
         tacosRecipe.setDifficulty(Difficulty.MODERATE);
-
+        
         tacosRecipe.setDirections("1 Prepare a gas or charcoal grill for medium-high, direct heat.\n" +
-                "2 Make the marinade and coat the chicken: In a large bowl, stir together the chili powder, oregano, cumin, sugar, salt, garlic and orange zest. Stir in the orange juice and olive oil to make a loose paste. Add the chicken to the bowl and toss to coat all over.\n" +
+                "2 Make the marinade and coat the chicken: In a large bowl, stir together the chili powder, oregano, " +
+                "cumin, sugar, salt, garlic and orange zest. Stir in the orange juice and olive oil to make a loose paste. " +
+                "Add the chicken to the bowl and toss to coat all over.\n" +
                 "Set aside to marinate while the grill heats and you prepare the rest of the toppings.\n" +
                 "\n" +
                 "\n" +
-                "3 Grill the chicken: Grill the chicken for 3 to 4 minutes per side, or until a thermometer inserted into the thickest part of the meat registers 165F. Transfer to a plate and rest for 5 minutes.\n" +
-                "4 Warm the tortillas: Place each tortilla on the grill or on a hot, dry skillet over medium-high heat. As soon as you see pockets of the air start to puff up in the tortilla, turn it with tongs and heat for a few seconds on the other side.\n" +
+                "3 Grill the chicken: Grill the chicken for 3 to 4 minutes per side, or until a thermometer inserted " +
+                "into the thickest part of the meat registers 165F. Transfer to a plate and rest for 5 minutes.\n" +
+                "4 Warm the tortillas: Place each tortilla on the grill or on a hot, dry skillet over medium-high heat." +
+                " As soon as you see pockets of the air start to puff up in the tortilla, turn it with tongs and heat " +
+                "for a few seconds on the other side.\n" +
                 "Wrap warmed tortillas in a tea towel to keep them warm until serving.\n" +
-                "5 Assemble the tacos: Slice the chicken into strips. On each tortilla, place a small handful of arugula. Top with chicken slices, sliced avocado, radishes, tomatoes, and onion slices. Drizzle with the thinned sour cream. Serve with lime wedges.\n" +
+                "5 Assemble the tacos: Slice the chicken into strips. On each tortilla, place a small handful of arugula. " +
+                "Top with chicken slices, sliced avocado, radishes, tomatoes, and onion slices. Drizzle with the thinned " +
+                "sour cream. Serve with lime wedges.\n" +
                 "\n" +
                 "\n" +
                 "Read more: http://www.simplyrecipes.com/recipes/spicy_grilled_chicken_tacos/#ixzz4jvtrAnNm");
-
+        
         Notes tacoNotes = new Notes();
         tacoNotes.setRecipeNotes("We have a family motto and it is this: Everything goes better in a tortilla.\n" +
                 "Any and every kind of leftover can go inside a warm tortilla, usually with a healthy dose of pickled jalapenos. I can always sniff out a late-night snacker when the aroma of tortillas heating in a hot pan on the stove comes wafting through the house.\n" +
@@ -185,9 +201,12 @@ public class RecipesBootstrap implements ApplicationListener<ContextRefreshedEve
                 "\n" +
                 "\n" +
                 "Read more: http://www.simplyrecipes.com/recipes/spicy_grilled_chicken_tacos/#ixzz4jvu7Q0MJ");
-
+        
         tacosRecipe.setNotes(tacoNotes);
-
+        tacosRecipe.setUrl("http://www.simplyrecipes.com/recipes/spicy_grilled_chicken_tacos/");
+        tacosRecipe.setServings(4);
+        tacosRecipe.setSource("Simply Recipes");
+        
         tacosRecipe.addIngredient(new Ingredient("Ancho Chili Powder", new BigDecimal(2), tablespoon, tacosRecipe));
         tacosRecipe.addIngredient(new Ingredient("Dried Oregano", new BigDecimal(1), teaspoon, tacosRecipe));
         tacosRecipe.addIngredient(new Ingredient("Dried Cumin", new BigDecimal(1), teaspoon, tacosRecipe));
@@ -207,12 +226,13 @@ public class RecipesBootstrap implements ApplicationListener<ContextRefreshedEve
         tacosRecipe.addIngredient(new Ingredient("Roughly chopped cilantro", new BigDecimal(4), each, tacosRecipe));
         tacosRecipe.addIngredient(new Ingredient("cup sour cream thinned with 1/4 cup milk", new BigDecimal(4), cup, tacosRecipe));
         tacosRecipe.addIngredient(new Ingredient("lime, cut into wedges", new BigDecimal(4), each, tacosRecipe));
-
-        tacosRecipe.getCategories().add(americanCategory);
+        
         tacosRecipe.getCategories().add(mexicanCategory);
-
+        tacosRecipe.getCategories().add(americanCategory);
+        tacosRecipe.getCategories().add(italianCategory);
+        
         recipesArrayList.add(tacosRecipe);
-
+        
         return recipesArrayList;
     }
 }
