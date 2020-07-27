@@ -67,10 +67,12 @@
                                 </div>
                                 <div class="col-md-3 form-group">
                                     <label>Difficulty:</label>
-                                    <select class="form-control">
-                                        <option>Easy</option>
-                                        <option>Medium</option>
-                                        <option>Hard</option>
+                                    <select class="form-control" th:field="*{difficulty}">
+                                        <option th:each="difficultyValue : ${T(guru.springframework.domain.Difficulty).values()}"
+                                                th:value="${difficultyValue.name()}"
+                                                th:text="${difficultyValue.name()}"
+                                        >val
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -97,54 +99,55 @@
                                     <h1 class="panel-title">Ingredients</h1>
                                 </div>
                                 <div class="col-md-1">
-                                    <a class="btn btn-default" href="#" role="button">Edit</a>
+                                    <a class="btn btn-default" href="#"
+                                       th:href="@{'/recipe/' + ${recipe.id} + '/ingredients'}" role="button">View</a>
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <ul>
-                                        <li th:remove="all">1 Cup of milk</li>
-                                        <li th:remove="all">1 Teaspoon of chocolate</li>
-                                        <li th:each="ingredient : ${recipe.ingredients}"
-                                            th:text="${(ingredient.getAmount() +
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ul>
+                                    <li th:remove="all">1 Cup of milk</li>
+                                    <li th:remove="all">1 Teaspoon of chocolate</li>
+                                    <li th:each="ingredient : ${recipe.ingredients}"
+                                        th:text="${(ingredient.getAmount() +
                                         ' ' + ingredient.uom.getDescription() +
                                         ' - ' + ingredient.getDescription())}">1 Teaspoon of Sugar
-                                        </li>
-                                    </ul>
-                                </div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h1 class="panel-title">Directions</h1>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <textarea class="form-control" rows="3" th:field="*{directions}"></textarea></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h1 class="panel-title">Notes</h1>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <textarea class="form-control" rows="3" th:field="*{notes.recipeNotes}"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
-            </form>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h1 class="panel-title">Directions</h1>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <textarea class="form-control" rows="3" th:field="*{directions}"></textarea></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h1 class="panel-title">Notes</h1>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <textarea class="form-control" rows="3" th:field="*{notes.recipeNotes}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
         </div>
+        </form>
     </div>
+</div>
 </div>
 </body>
 </html>

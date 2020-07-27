@@ -29,11 +29,7 @@ public class IngredientToIngredientCommandTest {
     public void setUp() throws Exception {
         converter = new IngredientToIngredientCommand(new UnitOfMeasureToUnitOfMeasureCommand());
     }
-
-    @Test
-    public void testNullConvert() throws Exception {
-        assertNull(converter.convert(null));
-    }
+    
 
     @Test
     public void testEmptyObject() throws Exception {
