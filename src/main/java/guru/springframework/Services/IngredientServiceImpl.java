@@ -31,7 +31,6 @@ public class IngredientServiceImpl implements IngredientService {
     }
     
     @Override
-    @Transactional
     public IngredientCommand findByRecipeIdAndIngredientId(Long recipeId, Long ingredientId) {
         Optional<Recipe> recipeOptional = recipeRepository.findById(recipeId);
         if (recipeOptional.isEmpty()) {
@@ -51,6 +50,7 @@ public class IngredientServiceImpl implements IngredientService {
     }
     
     @Override
+    @Transactional
     public IngredientCommand saveIngredientCommand(IngredientCommand command) {
         Optional<Recipe> recipeOptional = recipeRepository.findById(command.getRecipeId());
     
